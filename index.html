@@ -1,0 +1,539 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formation CCAM — Visionnage des vidéos</title>
+
+  <style>
+    :root {
+      --orange: #ed781e;
+      --navy: #18334d;
+      --text: #263648;
+      --muted: #728093;
+      --background: #f5f7fa;
+      --border: #e2e8ef;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--background);
+      color: var(--text);
+    }
+
+    .topbar {
+      height: 5px;
+      background: linear-gradient(90deg, var(--orange), #2588be);
+    }
+
+    header {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 22px 5%;
+    }
+
+    .brand {
+      font-weight: 750;
+      font-size: 18px;
+      color: var(--navy);
+    }
+
+    .container {
+      max-width: 1180px;
+      padding: 0 24px;
+      margin: auto;
+    }
+
+    .hero { padding: 48px 0 25px; }
+
+    .eyebrow {
+      color: var(--orange);
+      font-size: 12px;
+      font-weight: 750;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    h1 {
+      font-size: clamp(30px, 4vw, 46px);
+      letter-spacing: -1.5px;
+      color: var(--navy);
+      margin: 13px 0;
+    }
+
+    .description {
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 780px;
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .stat {
+      background: white;
+      padding: 9px 16px;
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      font-size: 13px;
+    }
+
+    .notice {
+      background: white;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--orange);
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-top: 28px;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .toolbar {
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 15px;
+      align-items: center;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    nav a {
+      background: white;
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      border-radius: 25px;
+      font-size: 12px;
+      color: var(--navy);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      background: #fff4ea;
+      border-color: var(--orange);
+    }
+
+    #search {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 15px;
+      font-size: 13px;
+      width: 240px;
+      max-width: 100%;
+    }
+
+    .section { padding-top: 35px; }
+
+    .section-header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 18px;
+      margin-bottom: 22px;
+    }
+
+    .section-header h2 {
+      color: var(--navy);
+      font-size: 25px;
+      margin: 0 0 8px;
+    }
+
+    .section-header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .video-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 3px 12px rgba(20, 40, 65, 0.04);
+      min-width: 0;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #152b42;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .video-info { padding: 17px 20px 20px; }
+
+    .video-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .duration {
+      background: #eef2f6;
+      border-radius: 5px;
+      padding: 4px 8px;
+      white-space: nowrap;
+    }
+
+    .video-info h3 {
+      color: var(--navy);
+      font-size: 17px;
+      margin: 12px 0 0;
+      line-height: 1.4;
+    }
+
+    .empty {
+      padding: 32px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    footer {
+      margin-top: 60px;
+      padding: 30px 24px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (max-width: 750px) {
+      .container { padding: 0 16px; }
+      .hero { padding-top: 32px; }
+      .video-grid { grid-template-columns: 1fr; }
+      .toolbar { align-items: stretch; }
+      #search { width: 100%; }
+      .section-header h2 { font-size: 22px; }
+    }
+  </style>
+</head>
+
+<body id="top">
+  <div class="topbar"></div>
+
+  <header>
+    <div class="container">
+      <div class="brand">Formation CCAM</div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <div class="hero">
+      <div class="eyebrow">Formation en odontologie</div>
+      <h1>Visionnage des vidéos CCAM</h1>
+
+      <p class="description">
+        Retrouvez l'ensemble des vidéos de la formation CCAM,
+        organisées par modules et séquences.
+        Vous pouvez visionner chaque vidéo directement sur cette page.
+      </p>
+
+      <div class="stats">
+        <span class="stat"><strong>19</strong> vidéos</span>
+        <span class="stat"><strong>3</strong> modules</span>
+        <span class="stat">Introduction et conclusion</span>
+      </div>
+
+      <div class="notice">
+        <strong>Validation des vidéos</strong><br>
+        Si vous constatez une erreur ou souhaitez proposer une modification,
+        merci de préciser dans votre retour :
+        <strong>le nom de la vidéo, le timecode exact (mm:ss)
+        et la correction souhaitée.</strong>
+      </div>
+
+      <div class="toolbar">
+        <nav id="navigation"></nav>
+        <input
+          type="search"
+          id="search"
+          placeholder="Rechercher une vidéo..."
+          aria-label="Rechercher une vidéo"
+        >
+      </div>
+    </div>
+
+    <div id="videos"></div>
+
+    <p id="empty" class="empty" hidden>
+      Aucune vidéo ne correspond à votre recherche.
+    </p>
+
+  </main>
+
+  <footer>
+    Formation CCAM — Espace de visionnage et de validation
+  </footer>
+
+  <script>
+    // Toutes les vidéos, dans l'ordre pédagogique.
+    // Chaque entrée contient : code, titre, ID Vimeo et durée.
+
+    const modules = [
+      {
+        id: "introduction",
+        label: "Introduction",
+        title: "Introduction",
+        description: "Présentation de la formation",
+        videos: [
+          ["CCAM_Introduction",
+           "Introduction à la formation",
+           "1244641238", "01:03"]
+        ]
+      },
+      {
+        id: "module1",
+        label: "Module 1",
+        title: "Module 1 — Généralités",
+        description: "Les fondamentaux de la CCAM",
+        videos: [
+          ["CCAM-M01-S01", "Rappels",
+           "1244641234", "11:33"],
+
+          ["CCAM-M01-S02", "Principes généraux",
+           "1244641433", "10:28"],
+
+          ["CCAM-M01-S03", "Les codes",
+           "1244641580", "07:04"]
+        ]
+      },
+      {
+        id: "module2",
+        label: "Module 2",
+        title: "Module 2 — Les familles d'actes",
+        description: "Les actes par spécialité dentaire",
+        videos: [
+          ["CCAM-M02-S01",
+           "Les familles d'actes et les actes par spécialité",
+           "1244641582", "05:31"],
+
+          ["CCAM-M02-S02",
+           "La radiologie",
+           "1244642318", "07:11"],
+
+          ["CCAM-M02-S03",
+           "Actes diagnostiques et épreuves fonctionnelles",
+           "1244642574", "02:28"],
+
+          ["CCAM-M02-S04",
+           "Le handicap",
+           "1244642845", "05:09"],
+
+          ["CCAM-M02-S05",
+           "L'occlusodontie",
+           "1244642855", "05:09"],
+
+          ["CCAM-M02-S06",
+           "La prévention et la prophylaxie",
+           "1244642925", "07:47"],
+
+          ["CCAM-M02-S07",
+           "Les restaurations",
+           "1244643178", "09:49"],
+
+          ["CCAM-M02-S08",
+           "L'endodontie",
+           "1244644400", "06:57"],
+
+          ["CCAM-M02-S09",
+           "Les actes chirurgicaux",
+           "1244644401", "12:24"],
+
+          ["CCAM-M02-S10",
+           "Les actes de parodontologie",
+           "1244644825", "14:01"],
+
+          ["CCAM-M02-S11",
+           "Les actes de prothèses fixes",
+           "1244846288", "20:40"],
+
+          ["CCAM-M02-S12",
+           "Les actes de prothèses amovibles",
+           "1244645730", "10:13"],
+
+          ["CCAM-M02-S13",
+           "Les actes NPC",
+           "1244646138", "03:32"]
+        ]
+      },
+      {
+        id: "module3",
+        label: "Module 3",
+        title: "Module 3 — Évolutions thérapeutiques",
+        description: "Les évolutions et alternatives thérapeutiques",
+        videos: [
+          ["CCAM-M03-S00",
+           "Les évolutions et alternatives thérapeutiques",
+           "1244641235", "02:08"]
+        ]
+      },
+      {
+        id: "conclusion",
+        label: "Conclusion",
+        title: "Conclusion",
+        description: "Clôture de la formation",
+        videos: [
+          ["CCAM-Conclusion",
+           "Conclusion de la formation",
+           "1244641233", "01:40"]
+        ]
+      }
+    ];
+
+    const navigation = document.getElementById("navigation");
+    const container = document.getElementById("videos");
+
+    // Génération de la navigation
+    modules.forEach(module => {
+      const link = document.createElement("a");
+      link.href = "#" + module.id;
+      link.textContent = module.label;
+      navigation.appendChild(link);
+    });
+
+    // Génération des modules et lecteurs vidéo
+    modules.forEach(module => {
+      const section = document.createElement("section");
+      section.className = "section";
+      section.id = module.id;
+
+      const heading = document.createElement("div");
+      heading.className = "section-header";
+
+      const title = document.createElement("h2");
+      title.textContent = module.title;
+
+      const description = document.createElement("p");
+      description.textContent = module.description;
+
+      heading.append(title, description);
+      section.appendChild(heading);
+
+      const grid = document.createElement("div");
+      grid.className = "video-grid";
+
+      module.videos.forEach(video => {
+        const [code, name, vimeoId, duration] = video;
+
+        const card = document.createElement("article");
+        card.className = "video-card";
+        card.dataset.search =
+          (code + " " + name + " " + module.title)
+          .toLowerCase();
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "video-wrapper";
+
+        const iframe = document.createElement("iframe");
+        iframe.src =
+          "https://player.vimeo.com/video/" + vimeoId +
+          "?badge=0&autopause=0";
+        iframe.title = code + " — " + name;
+        iframe.loading = "lazy";
+        iframe.allow =
+          "autoplay; fullscreen; picture-in-picture; " +
+          "clipboard-write; encrypted-media; web-share";
+        iframe.referrerPolicy =
+          "strict-origin-when-cross-origin";
+        iframe.setAttribute("allowfullscreen", "");
+
+        wrapper.appendChild(iframe);
+
+        const info = document.createElement("div");
+        info.className = "video-info";
+
+        const meta = document.createElement("div");
+        meta.className = "video-meta";
+
+        const codeElement = document.createElement("span");
+        codeElement.textContent = code;
+
+        const durationElement = document.createElement("span");
+        durationElement.className = "duration";
+        durationElement.textContent = duration;
+
+        meta.append(codeElement, durationElement);
+
+        const videoTitle = document.createElement("h3");
+        videoTitle.textContent = name;
+
+        info.append(meta, videoTitle);
+        card.append(wrapper, info);
+        grid.appendChild(card);
+      });
+
+      section.appendChild(grid);
+      container.appendChild(section);
+    });
+
+    // Recherche instantanée des vidéos
+    const search = document.getElementById("search");
+    const empty = document.getElementById("empty");
+
+    const normalize = text =>
+      text.toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+
+    search.addEventListener("input", () => {
+      const query = normalize(search.value.trim());
+      let visibleCount = 0;
+
+      document.querySelectorAll(".section").forEach(section => {
+        let sectionCount = 0;
+
+        section.querySelectorAll(".video-card").forEach(card => {
+          const match = normalize(card.dataset.search)
+            .includes(query);
+
+          card.hidden = !match;
+
+          if (match) {
+            visibleCount++;
+            sectionCount++;
+          }
+        });
+
+        section.hidden = sectionCount === 0;
+      });
+
+      empty.hidden = visibleCount !== 0;
+    });
+  </script>
+</body>
+</html>
